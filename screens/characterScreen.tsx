@@ -8,12 +8,24 @@ import { Card } from "../components/card"
 export const CharacterScreen = () => {
     const [characters, setCharacters] = useState<ICharacter[]>([])
     const scrollOffset = new Animated.Value(0)
-
+    const limit = 20;
+    let offset = 0;
     useEffect(() => {
-        CharacterService.getAllCharacters().then(charactersList => {
+        CharacterService.getCharacters({ limit, offset }).then(charactersList => {
+            console.log(charactersList.total)
             setCharacters(charactersList.results)
         })
     }, [])
+    const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+        return layoutMeasurement.height + contentOffset.y >= contentSize.height - 3000;
+    };
+
+    const fetchMoreCharacters = () => {
+        offset = offset + limit
+        CharacterService.getCharacters({ limit, offset }).then(charactersList => {
+            setCharacters(state => [...state, ...charactersList.results])
+        })
+    }
 
     return (
         <View style={styles.container}>
@@ -22,6 +34,11 @@ export const CharacterScreen = () => {
                 style={styles.container}
                 contentContainerStyle={styles.contentContainer}
                 scrollEventThrottle={1}
+                onScrollEndDrag={(e) => {
+                    if (isCloseToBottom(e.nativeEvent)) {
+                        fetchMoreCharacters()
+                    }
+                }}
                 onScroll={
                     Animated.event([{
                         nativeEvent: { contentOffset: { y: scrollOffset } }
