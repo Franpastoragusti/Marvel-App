@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { CharacterService } from '../services/characterService'
 import { ICharacter } from '../types'
-import { StyleSheet, Text, View, ScrollView, Image } from 'react-native';
+import { StyleSheet, View, Image, Animated } from 'react-native';
 import Layout from "../constants/layout"
 import { Card } from "../components/card"
 export const CharacterScreen = () => {
     const [characters, setCharacters] = useState<ICharacter[]>([])
+    const scrollOffset = new Animated.Value(0)
 
     useEffect(() => {
         CharacterService.getAllCharacters().then(charactersList => {
@@ -17,18 +18,36 @@ export const CharacterScreen = () => {
         <View style={styles.container}>
             <View style={styles.header}>
                 <Image style={styles.headerImage} source={require('../assets/images/marvelIcon.png')}></Image>
-                <View style={styles.textContainer}>
-                    <Text
-                        style={styles.headerText}
+                <Animated.View style={[styles.textContainer, {
+                    height: scrollOffset.interpolate({
+                        inputRange: [0, 200],
+                        outputRange: [60, 30],
+                        extrapolate: 'clamp',
+                    })
+                }]}>
+                    <Animated.Text
+                        style={[styles.headerText, {
+                            fontSize: scrollOffset.interpolate({
+                                inputRange: [0, 200],
+                                outputRange: [30, 20],
+                                extrapolate: 'clamp',
+                            })
+                        }]}
                     >
                         CHARACTERS
-                </Text>
-                </View>
+                </Animated.Text>
+                </Animated.View>
             </View>
 
-            <ScrollView
+            <Animated.ScrollView
                 style={styles.container}
                 contentContainerStyle={styles.contentContainer}
+                scrollEventThrottle={1}
+                onScroll={
+                    Animated.event([{
+                        nativeEvent: { contentOffset: { y: scrollOffset } }
+                    }])
+                }
             >
                 <View style={styles.container}>
                     {characters.map(character =>
@@ -42,7 +61,7 @@ export const CharacterScreen = () => {
                         ></Card>
                     )}
                 </View>
-            </ScrollView>
+            </Animated.ScrollView>
         </View >
     )
 }
