@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { CharacterService } from '../services/characterService'
 import { ICharacter } from '../types'
 import { StyleSheet, View, Image, Animated } from 'react-native';
@@ -7,25 +7,27 @@ import { Header } from "../components/header"
 import { Card } from "../components/card"
 export const CharacterScreen = () => {
     const [characters, setCharacters] = useState<ICharacter[]>([])
+    const [offset, setOffset] = useState(0)
     const scrollOffset = new Animated.Value(0)
     const limit = 20;
-    let offset = 0;
-    useEffect(() => {
-        CharacterService.getCharacters({ limit, offset }).then(charactersList => {
-            console.log(charactersList.total)
-            setCharacters(charactersList.results)
-        })
-    }, [])
+    let hasToCall = true;
+
     const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
         return layoutMeasurement.height + contentOffset.y >= contentSize.height - 3000;
     };
 
-    const fetchMoreCharacters = () => {
-        offset = offset + limit
+
+    useEffect(() => {
         CharacterService.getCharacters({ limit, offset }).then(charactersList => {
             setCharacters(state => [...state, ...charactersList.results])
         })
+
+    }, [offset])
+
+    const updateOffset = () => {
+        setOffset(state => state + limit)
     }
+
 
     return (
         <View style={styles.container}>
@@ -36,7 +38,7 @@ export const CharacterScreen = () => {
                 scrollEventThrottle={1}
                 onScrollEndDrag={(e) => {
                     if (isCloseToBottom(e.nativeEvent)) {
-                        fetchMoreCharacters()
+                        updateOffset()
                     }
                 }}
                 onScroll={
