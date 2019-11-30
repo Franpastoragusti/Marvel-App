@@ -15,7 +15,6 @@ const getCharacters = ({ limit, offset }): Promise<IAllCharacters> => {
         params = `${params}&limit=${limit}&`
     }
     config.params = params
-    console.log(config)
 
     return MarvelDataSource(config)
 }
