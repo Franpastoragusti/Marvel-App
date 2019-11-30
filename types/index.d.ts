@@ -6,6 +6,10 @@ export interface IMarvelResponse {
     results: any[];
 }
 
+export interface IMarvelImage {
+    extension: string;
+    path: string;
+}
 interface ICharacter {
     id: number;
     name: string;
@@ -18,11 +22,6 @@ interface ICharacter {
     stories: any;
     events: any;
     series: any;
-}
-
-interface IMarvelImage {
-    extension: string;
-    path: string;
 }
 
 interface IMarvelUrl {
