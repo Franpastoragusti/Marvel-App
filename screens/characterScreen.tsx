@@ -10,7 +10,6 @@ export const CharacterScreen = () => {
     const [offset, setOffset] = useState(0)
     const scrollOffset = new Animated.Value(0)
     const limit = 20;
-    let hasToCall = true;
 
     const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
         return layoutMeasurement.height + contentOffset.y >= contentSize.height - 3000;
