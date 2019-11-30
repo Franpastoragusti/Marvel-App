@@ -3,6 +3,7 @@ import { CharacterService } from '../services/characterService'
 import { ICharacter } from '../types'
 import { StyleSheet, View, Image, Animated } from 'react-native';
 import Layout from "../constants/layout"
+import { Header } from "../components/header"
 import { Card } from "../components/card"
 export const CharacterScreen = () => {
     const [characters, setCharacters] = useState<ICharacter[]>([])
@@ -16,29 +17,7 @@ export const CharacterScreen = () => {
 
     return (
         <View style={styles.container}>
-            <View style={styles.header}>
-                <Image style={styles.headerImage} source={require('../assets/images/marvelIcon.png')}></Image>
-                <Animated.View style={[styles.textContainer, {
-                    height: scrollOffset.interpolate({
-                        inputRange: [0, 200],
-                        outputRange: [60, 30],
-                        extrapolate: 'clamp',
-                    })
-                }]}>
-                    <Animated.Text
-                        style={[styles.headerText, {
-                            fontSize: scrollOffset.interpolate({
-                                inputRange: [0, 200],
-                                outputRange: [30, 20],
-                                extrapolate: 'clamp',
-                            })
-                        }]}
-                    >
-                        CHARACTERS
-                </Animated.Text>
-                </Animated.View>
-            </View>
-
+            <Header scrollOffset={scrollOffset} />
             <Animated.ScrollView
                 style={styles.container}
                 contentContainerStyle={styles.contentContainer}
@@ -74,37 +53,5 @@ const styles = StyleSheet.create({
     contentContainer: {
         alignItems: 'center',
         paddingTop: 30
-    },
-    header: {
-        paddingTop: 30,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        backgroundColor: "red",
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 4,
-        },
-        shadowOpacity: 0.30,
-        shadowRadius: 4.65,
-        elevation: 8,
-    },
-    headerImage: {
-        height: 50,
-        width: 100,
-        resizeMode: "contain"
-    },
-    headerText: {
-        fontSize: 30,
-        color: "#eeebfa",
-        fontFamily: 'space-mono',
-    },
-    textContainer: {
-        justifyContent: 'center',
-        alignItems: "center",
-        paddingHorizontal: Layout.window.width * 0.05,
-        width: Layout.window.width,
-        height: 60,
     }
 });
