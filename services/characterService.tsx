@@ -5,13 +5,21 @@ interface IAllCharacters extends IMarvelResponse {
     results: ICharacter[]
 }
 
-const getAllCharacters = (): Promise<IAllCharacters> => {
+const getCharacters = ({ limit, offset }): Promise<IAllCharacters> => {
     const config = {
-        pathName: "characters"
+        pathName: "characters",
+        params: null
     }
+    let params = `offset=${offset}`
+    if (limit > 0) {
+        params = `${params}&limit=${limit}&`
+    }
+    config.params = params
+    console.log(config)
+
     return MarvelDataSource(config)
 }
 
 export const CharacterService = {
-    getAllCharacters
+    getCharacters
 }
