@@ -1,14 +1,11 @@
 import { IMarvelCharacter, IMarvelResponse, IMarvelCharacterProjection } from "../types"
 import { MarvelDataSource } from "./marvelDataSource"
 
-interface IAllCharacters extends IMarvelResponse {
-    results: IMarvelCharacter[]
-}
 
 const characterListMapper = (characterList: IMarvelCharacter[]): IMarvelCharacterProjection[] => {
     return characterList.map(marvelCharacter => {
-        const { id, name, description, resourceURI, urls, thumbnail, comics } = marvelCharacter
-        return { id, name, description, resourceURI, urls, thumbnail, comics }
+        const { id, name, thumbnail } = marvelCharacter
+        return { id, name, thumbnail }
     })
 }
 const getCharacters = ({ limit, offset }): Promise<IMarvelCharacterProjection[]> => {
@@ -22,7 +19,8 @@ const getCharacters = ({ limit, offset }): Promise<IMarvelCharacterProjection[]>
     }
     config.params = params
 
-    return MarvelDataSource(config).then(characterList => characterListMapper(characterList.results))
+    return MarvelDataSource(config)
+        .then(characterList => characterListMapper(characterList.results))
 }
 
 export const CharacterService = {
