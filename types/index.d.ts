@@ -10,7 +10,17 @@ export interface IMarvelImage {
     extension: string;
     path: string;
 }
-interface ICharacter {
+
+export interface IMarvelCharacterProjection {
+    id: number;
+    name: string;
+    description: string;
+    resourceURI: string;
+    urls: IMarvelUrl[];
+    thumbnail: IMarvelImage;
+    comics: ComicList;
+}
+interface IMarvelCharacter {
     id: number;
     name: string;
     description: string;

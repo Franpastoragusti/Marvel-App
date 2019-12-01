@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { CharacterService } from '../services/characterService'
-import { ICharacter } from '../types'
+import { IMarvelCharacter, IMarvelCharacterProjection } from '../types'
 import { StyleSheet, View, Animated } from 'react-native';
 import { Header } from "../components/header"
 import { Card } from "../components/card"
 export const CharacterScreen = () => {
-    const [characters, setCharacters] = useState<ICharacter[]>([])
+    const [characters, setCharacters] = useState<IMarvelCharacterProjection[]>([])
     const [offset, setOffset] = useState(0)
     const scrollOffset = new Animated.Value(0)
     const limit = 30;
@@ -14,10 +14,9 @@ export const CharacterScreen = () => {
         return layoutMeasurement.height + contentOffset.y >= contentSize.height - 6000;
     };
 
-
     useEffect(() => {
         CharacterService.getCharacters({ limit, offset }).then(charactersList => {
-            setCharacters(state => [...state, ...charactersList.results])
+            setCharacters(state => [...state, ...charactersList])
         })
 
     }, [offset])
