@@ -11,8 +11,7 @@ interface IMarvelProps {
 export const MarvelDataSource = ({ pathName, params }: IMarvelProps): Promise<IMarvelResponse> => {
     const ts = Date.now()
     const hash = CryptoJS.MD5(ts + PRIVATE_KEY + PUBLIC_KEY).toString();
-    var url = `${BASE_URL}/${pathName}?${params ? params : ''}ts=${ts}&apikey=${PUBLIC_KEY}&hash=${hash}`
-
+    var url = `${BASE_URL}/${pathName}?${params ? params : ''}&ts=${ts}&apikey=${PUBLIC_KEY}&hash=${hash}`
     return fetch(url)
         .then(response => response.json())
         .then(jsonResponse => jsonResponse.data)
