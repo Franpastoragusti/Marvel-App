@@ -4,9 +4,13 @@ import { IMarvelCharacterProjection } from '../types'
 import { StyleSheet, View, Animated, TextInput, ActivityIndicator, Alert } from 'react-native';
 import { Header } from "../components/header"
 import { Card } from "../components/card"
+interface IProps {
+    navigation: any
+}
+
+export const CharacterScreen = ({ navigation }: IProps) => {
 
 
-export const CharacterScreen = () => {
     const [characters, setCharacters] = useState<IMarvelCharacterProjection[]>([])
     const [offset, setOffset] = useState(0)
     const [name, setName] = useState("")
@@ -58,7 +62,6 @@ export const CharacterScreen = () => {
 
     return (
         <View style={styles.container}>
-            <Header moveScrollUp={() => ({})} scrollOffset={scrollOffset} />
             <View>
                 <TextInput
                     style={styles.searchInput}
@@ -86,7 +89,8 @@ export const CharacterScreen = () => {
                 scrollEnabled={characters.length > 2}
                 data={characters}
                 renderItem={({ item }) => <Card
-                    content={item.id}
+                    navigation={navigation}
+                    id={item.id}
                     title={item.name}
                     titleLabel="NAME"
                     contentLabel="ID"
@@ -103,6 +107,16 @@ export const CharacterScreen = () => {
         </View >
     )
 }
+
+
+CharacterScreen.navigationOptions = {
+    headerTitle: (navigation) => <Header navigation={navigation} title="CHARACTERS" />,
+    headerStyle: {
+        backgroundColor: 'red',
+    },
+    headerTintColor: '#fff',
+};
+
 
 
 const styles = StyleSheet.create({

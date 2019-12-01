@@ -1,36 +1,43 @@
 import React from 'react'
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableWithoutFeedback } from 'react-native';
 import Layout from "../constants/layout"
 
 import { IMarvelImage } from '../types'
 interface ICard {
     thumbnail: IMarvelImage
-    title: string,
-    content: number
+    title: string
+    id: number
     contentLabel: string
     titleLabel: string
+    navigation: any
 }
-export const Card = ({ thumbnail, title, titleLabel, content, contentLabel }: ICard) => {
+export const Card = ({ thumbnail, title, titleLabel, id, contentLabel, navigation }: ICard) => {
     return (
-        <View style={styles.container}>
-            <View
-                style={styles.card}
-            >
-                <Image source={{ uri: `${thumbnail.path}.${thumbnail.extension}` }} style={styles.cardImage} />
+        <TouchableWithoutFeedback onPress={() => navigation.navigate('CharacterDetail', {
+            itemId: id,
+            name: title,
+            thumbnail: thumbnail
+        })}>
+            <View style={styles.container}>
                 <View
-                    style={styles.contentContainer}
+                    style={styles.card}
                 >
-                    <View>
-                        <Text style={styles.label}>{titleLabel}</Text>
-                        <Text style={styles.content}>{title}</Text>
-                    </View>
-                    <View>
-                        <Text style={styles.label}>{contentLabel}</Text>
-                        <Text style={styles.content}>{content}</Text>
+                    <Image source={{ uri: `${thumbnail.path}.${thumbnail.extension}` }} style={styles.cardImage} />
+                    <View
+                        style={styles.contentContainer}
+                    >
+                        <View>
+                            <Text style={styles.label}>{titleLabel}</Text>
+                            <Text style={styles.content}>{title}</Text>
+                        </View>
+                        <View>
+                            <Text style={styles.label}>{contentLabel}</Text>
+                            <Text style={styles.content}>{id}</Text>
+                        </View>
                     </View>
                 </View>
             </View>
-        </View>
+        </TouchableWithoutFeedback>
     )
 }
 
