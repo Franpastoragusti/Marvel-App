@@ -8,16 +8,19 @@ const characterListMapper = (characterList: IMarvelCharacter[]): IMarvelCharacte
         return { id, name, thumbnail }
     })
 }
-const getCharacters = ({ limit, offset }): Promise<IMarvelCharacterProjection[]> => {
+
+const getParamsString = (paramsToSet: { [key: string]: string }) => {
+    let paramsString = ""
+    Object.keys(paramsToSet).forEach(key => paramsString = `${paramsString}&${key}=${paramsToSet[key]}`)
+    console.log(paramsString.substr(1))
+    return paramsString.substr(1)
+}
+
+const getCharacters = ({ ...params }): Promise<IMarvelCharacterProjection[]> => {
     const config = {
         pathName: "characters",
-        params: null
+        params: getParamsString(params)
     }
-    let params = `offset=${offset}`
-    if (limit > 0) {
-        params = `${params}&limit=${limit}&`
-    }
-    config.params = params
 
     return MarvelDataSource(config)
         .then(characterList => characterListMapper(characterList.results))
