@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { CharacterService } from '../services/characterService'
-import { IMarvelCharacter, IMarvelCharacterProjection } from '../types'
-import { StyleSheet, View, Animated, ActivityIndicator } from 'react-native';
+import { IMarvelCharacterProjection } from '../types'
+import { StyleSheet, View, Animated, TextInput } from 'react-native';
 import { Header } from "../components/header"
 import { Card } from "../components/card"
 export const CharacterScreen = () => {
     const [characters, setCharacters] = useState<IMarvelCharacterProjection[]>([])
     const [offset, setOffset] = useState(0)
+    const [searchName, setSearchName] = useState("")
     const scrollOffset = new Animated.Value(0)
     const limit = 5;
     const [loadingMore, setLoadingMore] = useState(true);
@@ -16,7 +17,6 @@ export const CharacterScreen = () => {
             setCharacters(state => [...state, ...charactersList])
             setLoadingMore(false)
         })
-
     }, [offset])
 
     const renderFooter = () => {
@@ -26,6 +26,11 @@ export const CharacterScreen = () => {
     return (
         <View style={styles.container}>
             <Header moveScrollUp={() => ({})} scrollOffset={scrollOffset} />
+            <TextInput
+                style={styles.searchInput}
+                onChangeText={text => setSearchName(text)}
+                value={searchName}
+            />
             <Animated.FlatList
                 style={styles.flatList}
                 scrollEventThrottle={1}
@@ -67,5 +72,11 @@ const styles = StyleSheet.create({
     },
     loaderContainer: {
         height: 200
+    },
+    searchInput: {
+        height: 40,
+        borderColor: 'gray',
+        borderWidth: 1,
+        backgroundColor: "#FFF"
     }
 });
