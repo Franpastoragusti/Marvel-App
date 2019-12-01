@@ -48,6 +48,7 @@ export const CharacterScreen = () => {
             } else {
                 setCharacters(state => [...state, ...charactersList])
             }
+            setLoadingMore(false)
         })
     }
 
