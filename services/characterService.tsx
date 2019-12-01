@@ -11,17 +11,21 @@ const characterListMapper = (characterList: IMarvelCharacter[]): IMarvelCharacte
 
 const getParamsString = (paramsToSet: { [key: string]: string }) => {
     let paramsString = ""
-    Object.keys(paramsToSet).forEach(key => paramsString = `${paramsString}&${key}=${paramsToSet[key]}`)
-    console.log(paramsString.substr(1))
+    Object.keys(paramsToSet).forEach(key => {
+        if (paramsToSet[key] !== "") {
+            paramsString = `${paramsString}&${key}=${paramsToSet[key]}`
+        }
+    })
+
     return paramsString.substr(1)
 }
+
 
 const getCharacters = ({ ...params }): Promise<IMarvelCharacterProjection[]> => {
     const config = {
         pathName: "characters",
         params: getParamsString(params)
     }
-
     return MarvelDataSource(config)
         .then(characterList => characterListMapper(characterList.results))
 }
