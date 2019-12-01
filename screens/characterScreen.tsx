@@ -1,23 +1,36 @@
 import React, { useState, useEffect } from 'react'
+import debounce from 'lodash/debounce'
 import { CharacterService } from '../services/characterService'
 import { IMarvelCharacterProjection } from '../types'
-import { StyleSheet, View, Animated, TextInput } from 'react-native';
+import { StyleSheet, View, Animated, TextInput, ActivityIndicator } from 'react-native';
 import { Header } from "../components/header"
 import { Card } from "../components/card"
+
+
 export const CharacterScreen = () => {
     const [characters, setCharacters] = useState<IMarvelCharacterProjection[]>([])
     const [offset, setOffset] = useState(0)
-    const [searchName, setSearchName] = useState("")
+    const [name, setName] = useState("")
     const scrollOffset = new Animated.Value(0)
     const limit = 5;
     const [loadingMore, setLoadingMore] = useState(true);
 
     useEffect(() => {
-        CharacterService.getCharacters({ limit, offset }).then(charactersList => {
-            setCharacters(state => [...state, ...charactersList])
-            setLoadingMore(false)
+        getCharacters({ offset, limit, name })
+    }, [offset, limit])
+
+
+    const getCharacters = (params) => {
+        CharacterService.getCharacters(params).then(charactersList => {
+            if (charactersList.length === 1 || characters.length === 1) {
+                setCharacters(charactersList)
+            } else if (charactersList.length === 0 && name !== "") {
+                setCharacters([])
+            } else {
+                setCharacters(state => [...state, ...charactersList])
+            }
         })
-    }, [offset])
+    }
 
     const renderFooter = () => {
         return <View style={styles.loaderContainer}>{loadingMore ? <ActivityIndicator size="large" color="red" /> : null}</View>
@@ -28,8 +41,15 @@ export const CharacterScreen = () => {
             <Header moveScrollUp={() => ({})} scrollOffset={scrollOffset} />
             <TextInput
                 style={styles.searchInput}
-                onChangeText={text => setSearchName(text)}
-                value={searchName}
+                onChangeText={text => setName(text)}
+                value={name}
+                onSubmitEditing={() => {
+                    if (offset === 0 || name === "") {
+                        getCharacters({ offset, limit, name })
+                    } else {
+                        setOffset(0)
+                    }
+                }}
             />
             <Animated.FlatList
                 style={styles.flatList}
@@ -41,6 +61,7 @@ export const CharacterScreen = () => {
                         setOffset(state => state + limit)
                     }
                 }}
+                scrollEnabled={characters.length > 2}
                 data={characters}
                 renderItem={({ item }) => <Card
                     content={item.id}
@@ -74,7 +95,7 @@ const styles = StyleSheet.create({
         height: 200
     },
     searchInput: {
-        height: 40,
+        height: 60,
         borderColor: 'gray',
         borderWidth: 1,
         backgroundColor: "#FFF"
