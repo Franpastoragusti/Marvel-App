@@ -14,11 +14,7 @@ export interface IMarvelImage {
 export interface IMarvelCharacterProjection {
     id: number;
     name: string;
-    description: string;
-    resourceURI: string;
-    urls: IMarvelUrl[];
     thumbnail: IMarvelImage;
-    comics: ComicList;
 }
 interface IMarvelCharacter {
     id: number;
