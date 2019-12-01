@@ -16,7 +16,6 @@ const getParamsString = (paramsToSet: { [key: string]: string }) => {
             paramsString = `${paramsString}&${key}=${paramsToSet[key]}`
         }
     })
-
     return paramsString.substr(1)
 }
 
@@ -30,6 +29,15 @@ const getCharacters = ({ ...params }): Promise<IMarvelCharacterProjection[]> => 
         .then(characterList => characterListMapper(characterList.results))
 }
 
+const getCharacterById = (id): Promise<IMarvelCharacter[]> => {
+    const config = {
+        pathName: `characters/${id}`,
+    }
+    return MarvelDataSource(config)
+        .then(characterList => characterList.results)
+}
+
 export const CharacterService = {
-    getCharacters
+    getCharacters,
+    getCharacterById
 }
