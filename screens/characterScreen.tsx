@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import debounce from 'lodash/debounce'
 import { CharacterService } from '../services/characterService'
 import { IMarvelCharacterProjection } from '../types'
-import { StyleSheet, View, Animated, TextInput, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, Animated, TextInput, ActivityIndicator, Alert } from 'react-native';
 import { Header } from "../components/header"
 import { Card } from "../components/card"
 
@@ -18,7 +17,25 @@ export const CharacterScreen = () => {
     useEffect(() => {
         getCharacters({ offset, limit, name })
     }, [offset, limit])
+    const showAlert = () => {
+        Alert.alert(
+            'Not Character found',
+            'Try to search another',
+            [
+                {
+                    text: 'Reset',
+                    onPress: () => {
+                        setName("")
+                        getCharacters({ offset, limit, name: "" })
+                    },
+                    style: 'cancel',
+                },
+                { text: 'Ok', onPress: () => { } },
 
+            ],
+            { cancelable: false },
+        );
+    }
 
     const getCharacters = (params) => {
         CharacterService.getCharacters(params).then(charactersList => {
@@ -26,6 +43,7 @@ export const CharacterScreen = () => {
                 setCharacters(charactersList)
             } else if (charactersList.length === 0 && name !== "") {
                 setCharacters([])
+                showAlert()
             } else {
                 setCharacters(state => [...state, ...charactersList])
             }
@@ -39,18 +57,20 @@ export const CharacterScreen = () => {
     return (
         <View style={styles.container}>
             <Header moveScrollUp={() => ({})} scrollOffset={scrollOffset} />
-            <TextInput
-                style={styles.searchInput}
-                onChangeText={text => setName(text)}
-                value={name}
-                onSubmitEditing={() => {
-                    if (offset === 0 || name === "") {
-                        getCharacters({ offset, limit, name })
-                    } else {
-                        setOffset(0)
-                    }
-                }}
-            />
+            <View>
+                <TextInput
+                    style={styles.searchInput}
+                    onChangeText={text => setName(text)}
+                    value={name}
+                    onSubmitEditing={() => {
+                        if (offset === 0 || name === "") {
+                            getCharacters({ offset, limit, name })
+                        } else {
+                            setOffset(0)
+                        }
+                    }}
+                />
+            </View>
             <Animated.FlatList
                 style={styles.flatList}
                 scrollEventThrottle={1}
@@ -77,8 +97,7 @@ export const CharacterScreen = () => {
                         nativeEvent: { contentOffset: { y: scrollOffset } }
                     }])
                 }
-            >
-            </Animated.FlatList>
+            />
         </View >
     )
 }
