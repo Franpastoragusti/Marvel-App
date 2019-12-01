@@ -112,13 +112,16 @@ const styles = StyleSheet.create({
     flatList: {
         paddingTop: 30
     },
-    loaderContainer: {
-        height: 200
-    },
     searchInput: {
         height: 60,
+        paddingLeft: 10,
+        fontSize: 30,
+        fontFamily: 'space-mono',
         borderColor: 'gray',
         borderWidth: 1,
         backgroundColor: "#FFF"
+    },
+    loaderContainer: {
+        height: 200
     }
 });
