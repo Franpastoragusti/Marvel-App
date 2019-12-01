@@ -1,10 +1,10 @@
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
 import React, { useState } from 'react';
-import { Platform, StatusBar, StyleSheet, View, Image, ImageBackground } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { CharacterScreen } from './screens/characterScreen';
 import { Asset } from 'expo-asset';
+import AppNavigation from './navigation/appNavigation';
 
 
 const App = (props) => {
@@ -48,10 +48,7 @@ const App = (props) => {
     return (
       <View style={styles.container}>
         {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-        <ImageBackground source={require('./assets/images/background.png')} style={styles.backgroundImage}>
-
-          <CharacterScreen />
-        </ImageBackground>
+        <AppNavigation />
       </View>
     );
   }
