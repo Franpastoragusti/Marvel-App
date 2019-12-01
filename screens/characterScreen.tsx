@@ -17,6 +17,7 @@ export const CharacterScreen = () => {
     useEffect(() => {
         getCharacters({ offset, limit, name })
     }, [offset, limit])
+
     const showAlert = () => {
         Alert.alert(
             'Not Character found',
