@@ -1,31 +1,38 @@
 import React from 'react'
-import { StyleSheet, View, Image, Animated } from 'react-native';
+import { StyleSheet, View, Image, Animated, TouchableWithoutFeedback } from 'react-native';
 import Layout from "../constants/layout"
-export const Header = ({ scrollOffset }) => {
-    return (
-        <View style={styles.header}>
-            <Image style={styles.headerImage} source={require('../assets/images/marvelIcon.png')}></Image>
-            <Animated.View style={[styles.textContainer, {
-                height: scrollOffset.interpolate({
-                    inputRange: [0, 200],
-                    outputRange: [60, 30],
-                    extrapolate: 'clamp',
-                })
-            }]}>
-                <Animated.Text
-                    style={[styles.headerText, {
-                        fontSize: scrollOffset.interpolate({
-                            inputRange: [0, 200],
-                            outputRange: [30, 20],
-                            extrapolate: 'clamp',
-                        })
-                    }]}
-                >
-                    CHARACTERS
-                </Animated.Text>
-            </Animated.View>
-        </View>
 
+interface IProps {
+    scrollOffset: number;
+    moveScrollUp: () => void
+}
+
+export const Header = ({ scrollOffset, moveScrollUp }) => {
+    return (
+        <TouchableWithoutFeedback onPress={() => moveScrollUp()}>
+            <View style={styles.header}>
+                <Image style={styles.headerImage} source={require('../assets/images/marvelIcon.png')}></Image>
+                <Animated.View style={[styles.textContainer, {
+                    height: scrollOffset.interpolate({
+                        inputRange: [0, 200],
+                        outputRange: [60, 30],
+                        extrapolate: 'clamp',
+                    })
+                }]}>
+                    <Animated.Text
+                        style={[styles.headerText, {
+                            fontSize: scrollOffset.interpolate({
+                                inputRange: [0, 200],
+                                outputRange: [30, 20],
+                                extrapolate: 'clamp',
+                            })
+                        }]}
+                    >
+                        CHARACTERS
+                </Animated.Text>
+                </Animated.View>
+            </View>
+        </TouchableWithoutFeedback >
     )
 }
 

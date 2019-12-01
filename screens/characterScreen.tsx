@@ -1,18 +1,17 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import { CharacterService } from '../services/characterService'
 import { ICharacter } from '../types'
-import { StyleSheet, View, Image, Animated } from 'react-native';
-import Layout from "../constants/layout"
+import { StyleSheet, View, Animated } from 'react-native';
 import { Header } from "../components/header"
 import { Card } from "../components/card"
 export const CharacterScreen = () => {
     const [characters, setCharacters] = useState<ICharacter[]>([])
     const [offset, setOffset] = useState(0)
     const scrollOffset = new Animated.Value(0)
-    const limit = 20;
+    const limit = 30;
 
     const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
-        return layoutMeasurement.height + contentOffset.y >= contentSize.height - 3000;
+        return layoutMeasurement.height + contentOffset.y >= contentSize.height - 6000;
     };
 
 
@@ -27,38 +26,34 @@ export const CharacterScreen = () => {
         setOffset(state => state + limit)
     }
 
-
     return (
         <View style={styles.container}>
-            <Header scrollOffset={scrollOffset} />
-            <Animated.ScrollView
-                style={styles.container}
-                contentContainerStyle={styles.contentContainer}
+            <Header moveScrollUp={() => ({})} scrollOffset={scrollOffset} />
+            <Animated.FlatList
+                style={styles.flatList}
                 scrollEventThrottle={1}
                 onScrollEndDrag={(e) => {
                     if (isCloseToBottom(e.nativeEvent)) {
                         updateOffset()
                     }
                 }}
+                data={characters}
+                renderItem={({ item }) => {
+                    return <Card
+                        content={item.id}
+                        title={item.name}
+                        titleLabel="NAME"
+                        contentLabel="ID"
+                        thumbnail={item.thumbnail} />
+                }}
+                keyExtractor={(character) => String(character.id)}
                 onScroll={
                     Animated.event([{
                         nativeEvent: { contentOffset: { y: scrollOffset } }
                     }])
                 }
             >
-                <View style={styles.container}>
-                    {characters.map(character =>
-                        <Card
-                            key={character.id}
-                            content={character.id}
-                            title={character.name}
-                            titleLabel="NAME"
-                            contentLabel="ID"
-                            thumbnail={character.thumbnail}
-                        ></Card>
-                    )}
-                </View>
-            </Animated.ScrollView>
+            </Animated.FlatList>
         </View >
     )
 }
@@ -68,8 +63,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
-    contentContainer: {
-        alignItems: 'center',
+    flatList: {
         paddingTop: 30
     }
 });
