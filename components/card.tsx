@@ -28,7 +28,7 @@ export const Card = ({ thumbnail, title, titleLabel, id, contentLabel, navigatio
                     >
                         <View>
                             <Text style={styles.label}>{titleLabel}</Text>
-                            <Text style={styles.content}>{title}</Text>
+                            <Text numberOfLines={1} ellipsizeMode='tail' style={[styles.content, styles.wrapped]}>{title}</Text>
                         </View>
                         <View>
                             <Text style={styles.label}>{contentLabel}</Text>
@@ -46,6 +46,9 @@ var styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    wrapped: {
+        maxWidth: Layout.window.width - 140,
     },
     card: {
         width: Layout.window.width - 30,
