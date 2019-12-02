@@ -31,6 +31,7 @@ export const CharacterScreen = ({ navigation }: IProps) => {
                     text: 'Reset',
                     onPress: () => {
                         setName("")
+                        setLoadingMore(true)
                         getCharacters({ offset, limit, name: "" })
                     },
                     style: 'cancel',
