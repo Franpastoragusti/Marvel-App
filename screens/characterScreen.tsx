@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { CharacterService } from '../services/characterService'
 import { IMarvelCharacterProjection } from '../types'
-import { StyleSheet, View, Animated, TextInput, ActivityIndicator, Alert } from 'react-native';
+import { StyleSheet, View, TextInput, ActivityIndicator, Platform, Alert, FlatList } from 'react-native';
 import { Header } from "../components/header"
 import { Card } from "../components/card"
+import { Ionicons } from '@expo/vector-icons';
 interface IProps {
     navigation: any
 }
@@ -14,7 +15,6 @@ export const CharacterScreen = ({ navigation }: IProps) => {
     const [characters, setCharacters] = useState<IMarvelCharacterProjection[]>([])
     const [offset, setOffset] = useState(0)
     const [name, setName] = useState("")
-    const scrollOffset = new Animated.Value(0)
     const limit = 5;
     const [loadingMore, setLoadingMore] = useState(true);
 
@@ -57,26 +57,39 @@ export const CharacterScreen = ({ navigation }: IProps) => {
     }
 
     const renderFooter = () => {
-        return <View style={styles.loaderContainer}>{loadingMore ? <ActivityIndicator size="large" color="red" /> : null}</View>
+        return <View style={styles.loaderContainer}>{loadingMore ? <ActivityIndicator size="large" color="#ea2328" /> : null}</View>
+    }
+
+    const searchByName = () => {
+        if (offset === 0 || name === "") {
+            getCharacters({ offset, limit, name })
+        } else {
+            setOffset(0)
+        }
     }
 
     return (
         <View style={styles.container}>
-            <View>
+            <View style={styles.searchBarContainer}>
                 <TextInput
                     style={styles.searchInput}
                     onChangeText={text => setName(text)}
                     value={name}
-                    onSubmitEditing={() => {
-                        if (offset === 0 || name === "") {
-                            getCharacters({ offset, limit, name })
-                        } else {
-                            setOffset(0)
-                        }
-                    }}
+                    onSubmitEditing={() => searchByName()}
                 />
+                <View style={styles.searchIcon}>
+                    <Ionicons
+                        name={
+                            Platform.OS === 'ios'
+                                ? `ios-search`
+                                : `md-search`
+                        }
+                        size={30}
+                        color="#FFFFFF"
+                    />
+                </View>
             </View>
-            <Animated.FlatList
+            <FlatList
                 style={styles.flatList}
                 scrollEventThrottle={1}
                 onEndReachedThreshold={100}
@@ -98,11 +111,6 @@ export const CharacterScreen = ({ navigation }: IProps) => {
                 }
                 ListFooterComponent={renderFooter}
                 keyExtractor={(character) => String(character.id)}
-                onScroll={
-                    Animated.event([{
-                        nativeEvent: { contentOffset: { y: scrollOffset } }
-                    }])
-                }
             />
         </View >
     )
@@ -112,7 +120,7 @@ export const CharacterScreen = ({ navigation }: IProps) => {
 CharacterScreen.navigationOptions = {
     headerTitle: (navigation) => <Header navigation={navigation} title="CHARACTERS" />,
     headerStyle: {
-        backgroundColor: 'red',
+        backgroundColor: '#ea2328',
     },
     headerTintColor: '#fff',
 };
@@ -124,16 +132,38 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     flatList: {
-        paddingTop: 30
+        padding: 10,
+        paddingTop: 10,
+    },
+    searchBarContainer: {
+        padding: 10,
+        paddingTop: 5,
+        position: "relative"
     },
     searchInput: {
-        height: 60,
+        height: 50,
+        borderRadius: 10,
         paddingLeft: 10,
-        fontSize: 30,
+        fontSize: 20,
         fontFamily: 'space-mono',
         borderColor: 'gray',
         borderWidth: 1,
         backgroundColor: "#FFF"
+    },
+    searchIcon: {
+        position: "absolute",
+        top: 5,
+        right: 10,
+        backgroundColor: "#ea2328",
+        height: 50,
+        width: 50,
+        borderTopRightRadius: 10,
+        borderBottomRightRadius: 10,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        borderColor: 'gray',
+        borderWidth: 1,
     },
     loaderContainer: {
         height: 200

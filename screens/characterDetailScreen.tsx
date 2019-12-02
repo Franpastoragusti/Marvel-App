@@ -92,7 +92,7 @@ export const CharacterDetailScreen = ({ navigation }) => {
                                     <View key={i} style={{ paddingBottom: 10, paddingTop: 10 }}>
                                         <Button
                                             title={url.type.toUpperCase()}
-                                            color="red"
+                                            color="#ea2328"
                                             onPress={() => handleLink(url.url)}
                                         />
                                     </View>
@@ -109,7 +109,7 @@ export const CharacterDetailScreen = ({ navigation }) => {
 CharacterDetailScreen.navigationOptions = {
     headerTitle: (navigation) => <Header navigation={navigation} title="CHARACTERS" />,
     headerStyle: {
-        backgroundColor: 'red',
+        backgroundColor: '#ea2328',
     },
     headerTintColor: '#fff',
 };
