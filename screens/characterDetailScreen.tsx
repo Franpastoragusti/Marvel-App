@@ -82,7 +82,7 @@ export const CharacterDetailScreen = ({ navigation }) => {
                         <IconsBlock />
                         < View>
                             <Text style={styles.label}>DESCRIPTION</Text>
-                            <Text style={styles.infoValue}>{!!character.description ? character.description : "No description found"}</Text>
+                            <Text style={styles.value}>{!!character.description ? character.description : "No description found"}</Text>
                         </View>
                         < View>
                             <Text style={styles.label}>LINKS</Text>
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     imageContainer: {
-        height: 250,
+        height: 400,
         position: "relative"
     },
     backgroundImage: {
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     infoLabel: {
         fontFamily: 'space-mono',
         fontSize: 18,
-        color: "#394251",
+        color: "#fff",
         fontWeight: "500",
     },
     label: {
@@ -145,6 +145,11 @@ const styles = StyleSheet.create({
         maxWidth: Layout.window.width - 100,
     },
     infoValue: {
+        color: "#fff",
+        fontSize: 18,
+        fontFamily: 'space-mono',
+    },
+    value: {
         color: "#394251",
         fontSize: 18,
         fontFamily: 'space-mono',
@@ -157,7 +162,7 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         flexDirection: "row",
         height: 70,
-        backgroundColor: "rgba(238, 235, 250, 0.9)",
+        backgroundColor: "rgba(234, 35, 40, 0.9)",
         padding: 10,
         shadowColor: "#000",
         shadowOffset: {
@@ -166,7 +171,7 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.30,
         shadowRadius: 4.65,
-        elevation: 8,
+        elevation: 2,
     },
     scrollContainer: {
         padding: 10
