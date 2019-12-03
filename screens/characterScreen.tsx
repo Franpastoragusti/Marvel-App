@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { CharacterService } from '../services/characterService'
 import { IMarvelCharacterProjection } from '../types'
-import { StyleSheet, View, TextInput, ActivityIndicator, Platform, Alert, FlatList } from 'react-native';
+import { StyleSheet, View, Alert, FlatList } from 'react-native';
 import { Header } from "../components/header"
 import { Card } from "../components/card"
-import { Ionicons } from '@expo/vector-icons';
+import { Loader } from '../components/loader';
+import { SearchBar } from '../components/searchBar';
 interface IProps {
     navigation: any
 }
 
-export const CharacterScreen = ({ navigation }: IProps) => {
 
+export const CharacterScreen = ({ navigation }: IProps) => {
 
     const [characters, setCharacters] = useState<IMarvelCharacterProjection[]>([])
     const [offset, setOffset] = useState(0)
@@ -20,27 +21,35 @@ export const CharacterScreen = ({ navigation }: IProps) => {
 
     useEffect(() => {
         getCharacters({ offset, limit, name })
-    }, [offset, limit])
+    }, [offset])
 
     const showAlert = () => {
         Alert.alert(
             'Not Character found',
             'Try to search another',
-            [
-                {
-                    text: 'Reset',
-                    onPress: () => {
-                        setName("")
-                        setLoadingMore(true)
-                        getCharacters({ offset, limit, name: "" })
-                    },
-                    style: 'cancel',
-                },
-                { text: 'Ok', onPress: () => { } },
-
+            [{
+                text: 'Reset',
+                onPress: () => reset(),
+                style: 'cancel',
+            },
+            { text: 'Ok', onPress: () => { } },
             ],
             { cancelable: false },
         );
+    }
+
+    const reset = () => {
+        setName("")
+        setLoadingMore(true)
+        getCharacters({ offset, limit, name: "" })
+    }
+
+    const searchByName = () => {
+        if (offset === 0 || name === "") {
+            getCharacters({ offset, limit, name })
+        } else {
+            setOffset(0)
+        }
     }
 
     const getCharacters = (params) => {
@@ -57,50 +66,24 @@ export const CharacterScreen = ({ navigation }: IProps) => {
         })
     }
 
-    const renderFooter = () => {
-        return <View style={styles.loaderContainer}>{loadingMore ? <ActivityIndicator size="large" color="#ea2328" /> : null}</View>
-    }
-
-    const searchByName = () => {
-        if (offset === 0 || name === "") {
-            getCharacters({ offset, limit, name })
-        } else {
-            setOffset(0)
-        }
-    }
-
     return (
         <View style={styles.container}>
-            <View style={styles.searchBarContainer}>
-                <TextInput
-                    style={styles.searchInput}
-                    onChangeText={text => setName(text)}
-                    value={name}
-                    onSubmitEditing={() => searchByName()}
-                />
-                <View style={styles.searchIcon}>
-                    <Ionicons
-                        name={
-                            Platform.OS === 'ios'
-                                ? `ios-search`
-                                : `md-search`
-                        }
-                        size={30}
-                        color="#FFFFFF"
-                    />
-                </View>
-            </View>
+            <SearchBar
+                text={name}
+                setText={(text) => setName(text)}
+                search={() => searchByName()}
+            />
             <FlatList
                 style={styles.flatList}
                 scrollEventThrottle={1}
-                onEndReachedThreshold={100}
+                onEndReachedThreshold={500}
                 onEndReached={() => {
+                    console.log("end")
                     if (characters.length > 1) {
                         setLoadingMore(true)
                         setOffset(state => state + limit)
                     }
                 }}
-                scrollEnabled={characters.length > 2}
                 data={characters}
                 renderItem={({ item }) => <Card
                     navigation={navigation}
@@ -110,7 +93,7 @@ export const CharacterScreen = ({ navigation }: IProps) => {
                     contentLabel="ID"
                     thumbnail={item.thumbnail} />
                 }
-                ListFooterComponent={renderFooter}
+                ListFooterComponent={<Loader loading={loadingMore} />}
                 keyExtractor={(character) => String(character.id)}
             />
         </View >
@@ -165,8 +148,5 @@ const styles = StyleSheet.create({
         alignItems: "center",
         borderColor: 'gray',
         borderWidth: 1,
-    },
-    loaderContainer: {
-        height: 200
     }
 });
