@@ -26,6 +26,8 @@ const styles = StyleSheet.create({
     header: {
         display: "flex",
         alignItems: "center",
+        paddingTop: 4,
+        height: 80
     },
     headerImage: {
         height: 40,
