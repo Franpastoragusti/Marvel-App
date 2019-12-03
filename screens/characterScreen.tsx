@@ -12,11 +12,10 @@ interface IProps {
 
 
 export const CharacterScreen = ({ navigation }: IProps) => {
-
+    const limit = 30;
     const [characters, setCharacters] = useState<IMarvelCharacterProjection[]>([])
     const [offset, setOffset] = useState(0)
     const [name, setName] = useState("")
-    const limit = 5;
     const [loadingMore, setLoadingMore] = useState(true);
 
     useEffect(() => {
