@@ -30,6 +30,11 @@ interface IMarvelCharacter {
     series: any;
 }
 
+interface IMarvelComicProjection {
+    id: number;
+    title: string;
+    thumbnail: IMarvelImage;
+}
 interface IMarvelUrl {
     type: string;
     url: string;
