@@ -24,7 +24,7 @@ export const ComicScreen = ({ navigation }: IProps) => {
 
     const showAlert = () => {
         Alert.alert(
-            'Not Character found',
+            'Not Comic found',
             'Try to search another',
             [{
                 text: 'Reset',
