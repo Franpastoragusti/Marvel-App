@@ -12,7 +12,7 @@ import { Platform } from "react-native";
 
 const CharacterStack = createStackNavigator({
     CharaterScreen: CharacterScreen,
-    CharaterDetails: CharacterDetailScreen,
+    CharacterDetail: CharacterDetailScreen,
 });
 
 const ComicStack = createStackNavigator({
