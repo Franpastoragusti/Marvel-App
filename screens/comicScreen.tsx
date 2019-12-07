@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { CharacterService } from '../services/characterService'
-import { IMarvelCharacterProjection } from '../types'
+import { ComicService } from '../services/comicService'
+import { IMarvelCharacterProjection, IMarvelComicProjection } from '../types'
 import { StyleSheet, View, Alert, FlatList } from 'react-native';
 import { Header } from "../components/header"
 import { Card } from "../components/card"
@@ -13,13 +13,13 @@ interface IProps {
 
 export const ComicScreen = ({ navigation }: IProps) => {
     const limit = 30;
-    const [characters, setCharacters] = useState<IMarvelCharacterProjection[]>([])
+    const [comics, setComics] = useState<IMarvelComicProjection[]>([])
     const [offset, setOffset] = useState(0)
-    const [name, setName] = useState("")
+    const [title, setTitle] = useState("")
     const [loadingMore, setLoadingMore] = useState(true);
 
     useEffect(() => {
-        getCharacters({ offset, limit, name })
+        getComics({ offset, limit, title })
     }, [offset])
 
     const showAlert = () => {
@@ -38,28 +38,31 @@ export const ComicScreen = ({ navigation }: IProps) => {
     }
 
     const reset = () => {
-        setName("")
+        setTitle("")
         setLoadingMore(true)
-        getCharacters({ offset, limit, name: "" })
+        getComics({ offset, limit, title: "" })
     }
 
     const searchByName = () => {
-        if (offset === 0 || name === "") {
-            getCharacters({ offset, limit, name })
+        if (offset === 0 || title === "") {
+            getComics({ offset, limit, title })
         } else {
             setOffset(0)
         }
     }
 
-    const getCharacters = (params) => {
-        CharacterService.getCharacters(params).then(charactersList => {
-            if (charactersList.length === 1 || characters.length === 1) {
-                setCharacters(charactersList)
-            } else if (charactersList.length === 0 && name !== "") {
-                setCharacters([])
+    const getComics = (params) => {
+        ComicService.getComics(params).then(newComicList => {
+            newComicList.forEach(item => {
+                console.log(item.id)
+            })
+            if (newComicList.length === 1 || comics.length === 1) {
+                setComics(newComicList)
+            } else if (newComicList.length === 0 && title !== "") {
+                setComics([])
                 showAlert()
             } else {
-                setCharacters(state => [...state, ...charactersList])
+                setComics(state => [...state, ...newComicList])
             }
             setLoadingMore(false)
         })
@@ -68,8 +71,8 @@ export const ComicScreen = ({ navigation }: IProps) => {
     return (
         <View style={styles.container}>
             <SearchBar
-                text={name}
-                setText={(text) => setName(text)}
+                text={title}
+                setText={(text) => setTitle(text)}
                 search={() => searchByName()}
             />
             <FlatList
@@ -77,22 +80,22 @@ export const ComicScreen = ({ navigation }: IProps) => {
                 scrollEventThrottle={1}
                 onEndReachedThreshold={500}
                 onEndReached={() => {
-                    if (characters.length > 1) {
+                    if (comics.length > 1) {
                         setLoadingMore(true)
                         setOffset(state => state + limit)
                     }
                 }}
-                data={characters}
+                data={comics}
                 renderItem={({ item }) => <Card
                     navigation={navigation}
                     id={item.id}
-                    title={item.name}
+                    title={item.title}
                     titleLabel="NAME"
                     contentLabel="ID"
                     thumbnail={item.thumbnail} />
                 }
                 ListFooterComponent={<Loader loading={loadingMore} />}
-                keyExtractor={(character) => String(character.id)}
+                keyExtractor={(item) => String(item.id)}
             />
         </View >
     )
@@ -100,7 +103,7 @@ export const ComicScreen = ({ navigation }: IProps) => {
 
 
 ComicScreen.navigationOptions = {
-    headerTitle: (navigation) => <Header navigation={navigation} title="CHARACTERS" />,
+    headerTitle: (navigation) => <Header navigation={navigation} title="COMICS" />,
     headerStyle: {
         backgroundColor: '#ea2328',
     },
