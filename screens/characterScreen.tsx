@@ -77,7 +77,6 @@ export const CharacterScreen = ({ navigation }: IProps) => {
                 scrollEventThrottle={1}
                 onEndReachedThreshold={500}
                 onEndReached={() => {
-                    console.log("end")
                     if (characters.length > 1) {
                         setLoadingMore(true)
                         setOffset(state => state + limit)
