@@ -53,9 +53,6 @@ export const ComicScreen = ({ navigation }: IProps) => {
 
     const getComics = (params) => {
         ComicService.getComics(params).then(newComicList => {
-            newComicList.forEach(item => {
-                console.log(item.id)
-            })
             if (newComicList.length === 1 || comics.length === 1) {
                 setComics(newComicList)
             } else if (newComicList.length === 0 && title !== "") {
