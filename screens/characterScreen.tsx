@@ -65,6 +65,7 @@ export const CharacterScreen = ({ navigation }: IProps) => {
         })
     }
 
+//Comment
     return (
         <View style={styles.container}>
             <SearchBar
