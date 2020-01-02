@@ -1,4 +1,4 @@
-import { IMarvelCharacter, IMarvelResponse, IMarvelCharacterProjection, IMarvelComicProjection } from "../types"
+import { IMarvelCharacter, IMarvelResponse, IMarvelCharacterProjection, IMarvelComicProjection, IMarvelComic } from "../types"
 import { MarvelDataSource } from "./marvelDataSource"
 
 
@@ -29,7 +29,7 @@ const getComics = ({ ...params }): Promise<IMarvelComicProjection[]> => {
         .then(comicList => comicsListMapper(comicList.results))
 }
 
-const getComicsById = (id): Promise<IMarvelCharacter[]> => {
+const getComicsById = (id): Promise<IMarvelComic[]> => {
     const config = {
         pathName: `comics/${id}`,
     }

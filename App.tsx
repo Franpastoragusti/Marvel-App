@@ -5,6 +5,8 @@ import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Asset } from 'expo-asset';
 import AppNavigation from './navigation/appNavigation';
+import { FavComicsProvider } from './providers/favComicsProvider';
+import { FavCharactersProvider } from './providers/favCharactersProvider';
 
 
 const App = (props) => {
@@ -48,7 +50,12 @@ const App = (props) => {
     return (
       <View style={styles.container}>
         {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-        <AppNavigation />
+        <FavCharactersProvider>
+          <FavComicsProvider>
+            <AppNavigation />
+          </FavComicsProvider>
+        </FavCharactersProvider>
+
       </View>
     );
   }

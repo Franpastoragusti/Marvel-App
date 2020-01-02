@@ -15,11 +15,11 @@ export const CharacterScreen = ({ navigation }: IProps) => {
     const limit = 30;
     const [characters, setCharacters] = useState<IMarvelCharacterProjection[]>([])
     const [offset, setOffset] = useState(0)
-    const [name, setName] = useState("")
+    const [nameStartsWith, setName] = useState("")
     const [loadingMore, setLoadingMore] = useState(true);
 
     useEffect(() => {
-        getCharacters({ offset, limit, name })
+        getCharacters({ offset, limit, nameStartsWith })
     }, [offset])
 
     const showAlert = () => {
@@ -40,24 +40,25 @@ export const CharacterScreen = ({ navigation }: IProps) => {
     const reset = () => {
         setName("")
         setLoadingMore(true)
-        getCharacters({ offset, limit, name: "" })
+        getCharacters({ offset, limit, nameStartsWith: "" }, true)
     }
 
     const searchByName = () => {
-        if (offset === 0 || name === "") {
-            getCharacters({ offset, limit, name })
+        if (offset === 0) {
+            getCharacters({ offset, limit, nameStartsWith }, true)
         } else {
             setOffset(0)
         }
     }
 
-    const getCharacters = (params) => {
+    const getCharacters = (params, reset = false) => {
+
         CharacterService.getCharacters(params).then(charactersList => {
-            if (charactersList.length === 1 || characters.length === 1) {
-                setCharacters(charactersList)
-            } else if (charactersList.length === 0 && name !== "") {
-                setCharacters([])
+            if (charactersList.length === 0) {
                 showAlert()
+            }
+            if (reset) {
+                setCharacters(charactersList)
             } else {
                 setCharacters(state => [...state, ...charactersList])
             }
@@ -68,7 +69,7 @@ export const CharacterScreen = ({ navigation }: IProps) => {
     return (
         <View style={styles.container}>
             <SearchBar
-                text={name}
+                text={nameStartsWith}
                 setText={(text) => setName(text)}
                 search={() => searchByName()}
             />
@@ -77,13 +78,15 @@ export const CharacterScreen = ({ navigation }: IProps) => {
                 scrollEventThrottle={1}
                 onEndReachedThreshold={500}
                 onEndReached={() => {
-                    if (characters.length > 1) {
+                    if (characters.length > 1 && nameStartsWith === "") {
                         setLoadingMore(true)
                         setOffset(state => state + limit)
                     }
                 }}
                 data={characters}
                 renderItem={({ item }) => <Card
+                    big={false}
+                    storage="favCharacters"
                     navigation={navigation}
                     id={item.id}
                     title={item.name}
@@ -116,35 +119,5 @@ const styles = StyleSheet.create({
     flatList: {
         padding: 10,
         paddingTop: 10,
-    },
-    searchBarContainer: {
-        padding: 10,
-        paddingTop: 5,
-        position: "relative"
-    },
-    searchInput: {
-        height: 50,
-        borderRadius: 10,
-        paddingLeft: 10,
-        fontSize: 20,
-        fontFamily: 'space-mono',
-        borderColor: 'gray',
-        borderWidth: 1,
-        backgroundColor: "#FFF"
-    },
-    searchIcon: {
-        position: "absolute",
-        top: 5,
-        right: 10,
-        backgroundColor: "#ea2328",
-        height: 50,
-        width: 50,
-        borderTopRightRadius: 10,
-        borderBottomRightRadius: 10,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        borderColor: 'gray',
-        borderWidth: 1,
     }
 });

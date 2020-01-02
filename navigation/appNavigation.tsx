@@ -17,7 +17,7 @@ const CharacterStack = createStackNavigator({
 
 const ComicStack = createStackNavigator({
     ComicScreen: ComicScreen,
-    ComicDetails: ComicDetailScreen,
+    ComicDetail: ComicDetailScreen,
 });
 
 

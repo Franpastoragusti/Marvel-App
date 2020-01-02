@@ -29,6 +29,18 @@ interface IMarvelCharacter {
     events: any;
     series: any;
 }
+interface IMarvelComic {
+    id: number;
+    title: string;
+    thumbnail: IMarvelImage;
+    description: string;
+    resourceURI: string;
+    urls: IMarvelUrl[];
+    characters: any;
+    stories: any;
+    events: any;
+    creators: any;
+}
 
 interface IMarvelComicProjection {
     id: number;

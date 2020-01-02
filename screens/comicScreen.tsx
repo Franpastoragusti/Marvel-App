@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { ComicService } from '../services/comicService'
-import { IMarvelCharacterProjection, IMarvelComicProjection } from '../types'
+import { IMarvelComicProjection } from '../types'
 import { StyleSheet, View, Alert, FlatList } from 'react-native';
 import { Header } from "../components/header"
 import { Card } from "../components/card"
@@ -15,11 +15,11 @@ export const ComicScreen = ({ navigation }: IProps) => {
     const limit = 30;
     const [comics, setComics] = useState<IMarvelComicProjection[]>([])
     const [offset, setOffset] = useState(0)
-    const [title, setTitle] = useState("")
+    const [titleStartsWith, setTitle] = useState("")
     const [loadingMore, setLoadingMore] = useState(true);
 
     useEffect(() => {
-        getComics({ offset, limit, title })
+        getComics({ offset, limit, titleStartsWith })
     }, [offset])
 
     const showAlert = () => {
@@ -40,27 +40,28 @@ export const ComicScreen = ({ navigation }: IProps) => {
     const reset = () => {
         setTitle("")
         setLoadingMore(true)
-        getComics({ offset, limit, title: "" })
+        getComics({ offset, limit, titleStartsWith: "" }, true)
     }
 
     const searchByName = () => {
-        if (offset === 0 || title === "") {
-            getComics({ offset, limit, title })
+        if (offset === 0) {
+            getComics({ offset, limit, titleStartsWith }, true)
         } else {
             setOffset(0)
         }
     }
 
-    const getComics = (params) => {
+    const getComics = (params, reset = false) => {
         ComicService.getComics(params).then(newComicList => {
-            if (newComicList.length === 1 || comics.length === 1) {
-                setComics(newComicList)
-            } else if (newComicList.length === 0 && title !== "") {
-                setComics([])
+            if (newComicList.length === 0) {
                 showAlert()
+            }
+            if (reset) {
+                setComics(newComicList)
             } else {
                 setComics(state => [...state, ...newComicList])
             }
+
             setLoadingMore(false)
         })
     }
@@ -68,7 +69,7 @@ export const ComicScreen = ({ navigation }: IProps) => {
     return (
         <View style={styles.container}>
             <SearchBar
-                text={title}
+                text={titleStartsWith}
                 setText={(text) => setTitle(text)}
                 search={() => searchByName()}
             />
@@ -77,13 +78,15 @@ export const ComicScreen = ({ navigation }: IProps) => {
                 scrollEventThrottle={1}
                 onEndReachedThreshold={500}
                 onEndReached={() => {
-                    if (comics.length > 1) {
+                    if (comics.length > 1 && titleStartsWith === "") {
                         setLoadingMore(true)
                         setOffset(state => state + limit)
                     }
                 }}
                 data={comics}
                 renderItem={({ item }) => <Card
+                    big={false}
+                    storage="favComics"
                     navigation={navigation}
                     id={item.id}
                     title={item.title}
@@ -116,35 +119,5 @@ const styles = StyleSheet.create({
     flatList: {
         padding: 10,
         paddingTop: 10,
-    },
-    searchBarContainer: {
-        padding: 10,
-        paddingTop: 5,
-        position: "relative"
-    },
-    searchInput: {
-        height: 50,
-        borderRadius: 10,
-        paddingLeft: 10,
-        fontSize: 20,
-        fontFamily: 'space-mono',
-        borderColor: 'gray',
-        borderWidth: 1,
-        backgroundColor: "#FFF"
-    },
-    searchIcon: {
-        position: "absolute",
-        top: 5,
-        right: 10,
-        backgroundColor: "#ea2328",
-        height: 50,
-        width: 50,
-        borderTopRightRadius: 10,
-        borderBottomRightRadius: 10,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        borderColor: 'gray',
-        borderWidth: 1,
     }
 });
