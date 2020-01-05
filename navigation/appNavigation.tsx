@@ -13,11 +13,15 @@ import { Platform } from "react-native";
 const CharacterStack = createStackNavigator({
     CharaterScreen: CharacterScreen,
     CharacterDetail: CharacterDetailScreen,
+}, {
+    headerLayoutPreset: 'center',
 });
 
 const ComicStack = createStackNavigator({
     ComicScreen: ComicScreen,
     ComicDetail: ComicDetailScreen,
+}, {
+    headerLayoutPreset: 'center',
 });
 
 
