@@ -11,6 +11,7 @@ export const FavCharactersProvider = (props: any) => {
     useEffect(() => {
         let isSubscribed = true
         getValuesFromStorage(store).then(result => {
+            result = !!result ? result : []
             if (isSubscribed) {
                 setFavArray(result)
             }
